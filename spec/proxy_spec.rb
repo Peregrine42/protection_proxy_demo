@@ -1,25 +1,22 @@
 require_relative '../proxy'
 require_relative '../account'
+require_relative './shared_account_spec'
 
 describe Proxy do
 
   context 'user is ok' do
 
-    let!(:auth)    { double(:auth, authenticate: true) }
-    let!(:account) { Proxy.new(Account.new, auth)      }
-
-    it 'delegates account operations to its subject' do
-      account.deposit 50
-      account.withdraw 10
-      expect(account.balance).to eq 40
+    it_behaves_like "an account" do
+      let(:auth)    { double(:auth, authenticate: true) }
+      let(:account) { Proxy.new(Account.new, auth)      }
     end
 
   end
 
   context "it's a trap!" do
 
-    let!(:auth)    { double(:auth, authenticate: false) }
-    let!(:account) { Proxy.new(Account.new, auth)       }
+    let(:auth)    { double(:auth, authenticate: false) }
+    let(:account) { Proxy.new(Account.new, auth)       }
 
     it 'raises an error' do
       expect { account.withdraw 10_000 }.to raise_error ProtectionException, 'unauthorised'
