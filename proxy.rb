@@ -6,22 +6,18 @@ class Proxy
   end
 
   def authenticate!
-    raise ProtectionException.new('unauthorised') unless @auth.authenticate
+    raise ProtectionException.new "unauthorised" unless @auth.authenticate
   end
 
-  def deposit amount
-    authenticate!
-    @subject.deposit amount
+  def respond_to? name
+    #[:withdraw, :deposit].include? name || super
+    @subject.respond_to? name || super
   end
 
-  def withdraw amount
+  def method_missing name, *args
+    super unless respond_to? name
     authenticate!
-    @subject.withdraw amount
-  end
-
-  def balance
-    authenticate!
-    @subject.balance
+    @subject.send(name, *args)
   end
 
 end

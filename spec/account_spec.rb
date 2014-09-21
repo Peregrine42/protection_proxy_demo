@@ -12,7 +12,7 @@ end
 
 describe Account, '#withdraw' do
 
-  it 'makes a withdraw from the account' do
+  it 'makes a withdrawal from the account' do
     account = Account.new
     account.deposit 50
     account.withdraw 30
